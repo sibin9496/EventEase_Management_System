@@ -1,0 +1,12 @@
+{
+  "watch": ["routes", "models", "controllers", "middleware", "utils", "config", "scripts", "server.js"],
+  "ext": "js,json",
+  "ignore": ["node_modules", "uploads", ".git"],
+  "delay": 1000,
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "restartable": "rs",
+  "verbose": true,
+  "exitcrash": false
+}
