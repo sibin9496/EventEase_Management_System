@@ -1,3 +1,4 @@
+cd "d:\Fullstack\Event Management"
 
 $gitignore = @"
 # Dependencies
@@ -46,3 +47,4 @@ eventease/backend/dist/
 eventease/frontend/eventease/dist/
 "@
 
+$gitignore | Out-File -Encoding UTF8 .gitignore
