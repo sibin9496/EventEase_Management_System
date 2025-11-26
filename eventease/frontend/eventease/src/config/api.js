@@ -11,13 +11,22 @@ const getApiBaseUrl = () => {
   // In production: use environment variable or direct URL
   console.log('📡 PRODUCTION MODE');
   console.log('   VITE_API_URL env var:', import.meta.env.VITE_API_URL);
+  console.log('   window.location.hostname:', window.location.hostname);
   
+  // Check if VITE_API_URL was set during build
   if (import.meta.env.VITE_API_URL) {
     console.log('✅ Using VITE_API_URL:', import.meta.env.VITE_API_URL);
     return import.meta.env.VITE_API_URL;
   }
   
-  console.log('⚠️ VITE_API_URL not set, using fallback');
+  // Fallback: if on Render frontend domain, construct the backend URL
+  if (window.location.hostname.includes('onrender.com')) {
+    const backendUrl = 'https://eventease-backend-loau.onrender.com/api';
+    console.log('⚠️ VITE_API_URL not set at build time, using Render fallback:', backendUrl);
+    return backendUrl;
+  }
+  
+  console.log('⚠️ Falling back to localhost');
   return 'http://localhost:5000/api';
 };
 

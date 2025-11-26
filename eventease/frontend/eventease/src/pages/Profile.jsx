@@ -19,6 +19,7 @@ import {
     Radio
 } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Edit as EditIcon, Save as SaveIcon, NotificationsActive, Lock } from '@mui/icons-material';
 
 const Profile = () => {
@@ -79,7 +80,7 @@ const Profile = () => {
                 return;
             }
 
-            const response = await fetch('/api/users/profile', {
+            const response = await fetch(`${API_BASE_URL}/users/profile`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -137,7 +138,7 @@ const Profile = () => {
                 return;
             }
 
-            const response = await fetch('/api/users/settings/notifications', {
+            const response = await fetch(`${API_BASE_URL}/users/settings/notifications`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -176,7 +177,7 @@ const Profile = () => {
                 return;
             }
 
-            const response = await fetch('/api/users/settings/privacy', {
+            const response = await fetch(`${API_BASE_URL}/users/settings/privacy`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -207,7 +208,7 @@ const Profile = () => {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const response = await fetch('/api/users/settings', {
+            const response = await fetch(`${API_BASE_URL}/users/settings`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

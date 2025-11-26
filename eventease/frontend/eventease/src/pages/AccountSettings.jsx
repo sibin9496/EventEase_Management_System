@@ -19,6 +19,7 @@ import {
     Close
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 const AccountSettings = () => {
     const { user } = useAuth();
@@ -52,7 +53,7 @@ const AccountSettings = () => {
                 return;
             }
 
-            const response = await fetch('/api/users/settings', {
+            const response = await fetch(`${API_BASE_URL}/users/settings`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -147,7 +148,7 @@ const AccountSettings = () => {
                         const formData = new FormData();
                         formData.append('photo', blob, 'profile-photo.jpg');
 
-                        const response = await fetch('/api/users/upload-photo', {
+                        const response = await fetch(`${API_BASE_URL}/users/upload-photo`, {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${token}`

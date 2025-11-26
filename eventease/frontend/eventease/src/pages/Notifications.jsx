@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import { useNavigate } from 'react-router-dom';
 
 const Notifications = () => {
@@ -25,7 +26,7 @@ const Notifications = () => {
                 return;
             }
 
-            const response = await fetch('/api/notifications', {
+            const response = await fetch(`${API_BASE_URL}/notifications`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

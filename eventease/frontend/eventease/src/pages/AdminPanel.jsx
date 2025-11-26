@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 
 const AdminPanel = () => {
     const { user, logout } = useAuth();
@@ -86,7 +87,7 @@ const AdminPanel = () => {
 
             // Fetch ALL events (including trending)
             console.log('📡 AdminPanel: Fetching events with limit=500...');
-            const eventsRes = await fetch(`${API_BASE}/events?limit=500`, { headers });
+            const eventsRes = await fetch(`${API_BASE_URL}/events?limit=500`, { headers });
             if (eventsRes.ok) {
                 const data = await eventsRes.json();
                 console.log('✅ AdminPanel: Events fetched -', data.data?.length || 0, 'total:', data.total);
@@ -100,7 +101,7 @@ const AdminPanel = () => {
 
             // Fetch registrations
             console.log('📡 AdminPanel: Fetching registrations...');
-            const registrationsRes = await fetch(`${API_BASE}/registrations`, { headers });
+            const registrationsRes = await fetch(`${API_BASE_URL}/registrations`, { headers });
             if (registrationsRes.ok) {
                 const data = await registrationsRes.json();
                 setRegistrations(data.registrations || data.data || []);
@@ -222,7 +223,7 @@ const AdminPanel = () => {
             } else {
                 // Create new event
                 console.log('📡 AdminPanel: Creating new event');
-                const response = await fetch(`${API_BASE}/admin/events`, {
+                const response = await fetch(`${API_BASE_URL}/admin/events`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

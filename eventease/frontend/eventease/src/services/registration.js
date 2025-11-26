@@ -8,7 +8,7 @@ const getAuthHeaders = () => {
 };
 
 // API Base URL - use /api proxy for development
-const API_BASE_URL = '/api';
+import { API_BASE_URL } from '../config/api.js';
 
 // Build API URL
 const getApiUrl = (endpoint) => {
