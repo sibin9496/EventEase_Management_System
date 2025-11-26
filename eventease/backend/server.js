@@ -18,13 +18,42 @@ const JWT_SECRET = process.env.JWT_SECRET || 'eventease-secret-key-2025';
 
 // ==================== MIDDLEWARE ====================
 
-// CORS
-app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+// CORS - Allow requests from frontend
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests without origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+        
+        // Allowed origins
+        const allowedOrigins = [
+            'http://localhost:3000', 
+            'http://localhost:3001', 
+            'http://localhost:3002', 
+            'http://localhost:5173', 
+            'http://127.0.0.1:5173',
+            'https://eventease-gy5c.onrender.com',
+            'https://eventease-frontend.onrender.com'
+        ];
+        
+        // Allow any *.onrender.com domain (for flexibility if URLs change)
+        if (origin.includes('.onrender.com')) {
+            return callback(null, true);
+        }
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            // Log but still allow for debugging
+            console.log('⚠️ CORS request from:', origin);
+            callback(null, true);
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Body parsing
 app.use(express.json({ limit: '50mb' }));
