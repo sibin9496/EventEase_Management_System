@@ -32,8 +32,7 @@ import {
     Refresh as RefreshIcon,
     Close as CloseIcon
 } from '@mui/icons-material';
-
-const API_URL = '/api/subscriptions';
+import { API_BASE_URL } from '../config/api';
 
 const SubscriberManagement = () => {
     const [subscribers, setSubscribers] = useState([]);
@@ -71,7 +70,7 @@ const SubscriberManagement = () => {
                 filter: filterType
             });
 
-            const response = await fetch(`${API_URL}?${params}`, {
+            const response = await fetch(`${API_BASE_URL}/subscriptions?${params}`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -92,7 +91,7 @@ const SubscriberManagement = () => {
     // Fetch stats
     const fetchStats = async () => {
         try {
-            const response = await fetch(`${API_URL}/stats`, {
+            const response = await fetch(`${API_BASE_URL}/subscriptions/stats`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -145,7 +144,7 @@ const SubscriberManagement = () => {
         if (!window.confirm('Are you sure you want to delete this subscriber?')) return;
 
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/subscriptions/${id}`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
@@ -172,7 +171,7 @@ const SubscriberManagement = () => {
         if (!selectedSubscriber) return;
 
         try {
-            const response = await fetch(`${API_URL}/${selectedSubscriber._id}`, {
+            const response = await fetch(`${API_BASE_URL}/subscriptions/${selectedSubscriber._id}`, {
                 method: 'PUT',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({

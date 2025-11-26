@@ -71,11 +71,10 @@ const AdminPanel = () => {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             };
-            const API_BASE = '/api';
 
             // Fetch users
             console.log('📡 AdminPanel: Fetching users...');
-            const usersRes = await fetch(`${API_BASE}/admin/users`, { headers });
+            const usersRes = await fetch(`${API_BASE_URL}/admin/users`, { headers });
             if (usersRes.ok) {
                 const data = await usersRes.json();
                 setUsers(data.users || data.data || []);
@@ -123,11 +122,10 @@ const AdminPanel = () => {
         e.preventDefault();
         setError('');
         setSuccessMsg('');
-        const API_BASE = '/api';
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE}/admin/create-admin`, {
+            const response = await fetch(`${API_BASE_URL}/admin/create-admin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -151,7 +149,6 @@ const AdminPanel = () => {
 
     const handleDeleteAdmin = async (adminId) => {
         if (!window.confirm('Remove this admin?')) return;
-        const API_BASE = '/api';
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${API_BASE}/admin/users/${adminId}`, {
