@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User.js';
+import Event from '../models/Event.js';
 import Session from '../models/Session.js';
 import { checkRole, adminOnly } from '../middleware/roleAuth.js';
 import auth from '../middleware/auth.js';
@@ -233,6 +234,128 @@ router.get('/user-activity/:userId', auth, adminOnly, async (req, res) => {
   } catch (error) {
     console.error('Get activity error:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ===== EVENT ADMIN ENDPOINTS =====
+
+// Get all events (admin only)
+router.get('/events', auth, adminOnly, async (req, res) => {
+  try {
+    const events = await Event.find()
+      .populate('organizer', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.json({
+      status: 'success',
+      events,
+      total: events.length
+    });
+  } catch (error) {
+    console.error('Get all events error:', error);
+    res.status(500).json({ message: 'Server error while fetching events' });
+  }
+});
+
+// Create event (admin only)
+router.post('/events', auth, adminOnly, async (req, res) => {
+  try {
+    const { title, description, date, time, location, price, capacity, category, image } = req.body;
+
+    // Validate input
+    if (!title || !description || !date || !location || !category) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const newEvent = new Event({
+      title,
+      description,
+      date,
+      time,
+      location,
+      price: price || 0,
+      capacity: capacity || 100,
+      category,
+      image,
+      organizer: req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    await newEvent.save();
+
+    const populatedEvent = await Event.findById(newEvent._id)
+      .populate('organizer', 'name email');
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Event created successfully',
+      event: populatedEvent
+    });
+  } catch (error) {
+    console.error('Create event error:', error);
+    res.status(500).json({ message: 'Server error while creating event' });
+  }
+});
+
+// Update event (admin only)
+router.put('/events/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const { title, description, date, time, location, price, capacity, category, image } = req.body;
+
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Update fields
+    if (title) event.title = title;
+    if (description) event.description = description;
+    if (date) event.date = date;
+    if (time) event.time = time;
+    if (location) event.location = location;
+    if (price !== undefined) event.price = price;
+    if (capacity) event.capacity = capacity;
+    if (category) event.category = category;
+    if (image) event.image = image;
+
+    event.updatedAt = new Date();
+    await event.save();
+
+    const populatedEvent = await Event.findById(event._id)
+      .populate('organizer', 'name email');
+
+    res.json({
+      status: 'success',
+      message: 'Event updated successfully',
+      event: populatedEvent
+    });
+  } catch (error) {
+    console.error('Update event error:', error);
+    res.status(500).json({ message: 'Server error while updating event' });
+  }
+});
+
+// Delete event (admin only)
+router.delete('/events/:id', auth, adminOnly, async (req, res) => {
+  try {
+    const event = await Event.findByIdAndDelete(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.json({
+      status: 'success',
+      message: 'Event deleted successfully',
+      deletedEvent: {
+        id: event._id,
+        title: event.title
+      }
+    });
+  } catch (error) {
+    console.error('Delete event error:', error);
+    res.status(500).json({ message: 'Server error while deleting event' });
   }
 });
 

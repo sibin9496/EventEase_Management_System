@@ -151,7 +151,7 @@ const AdminPanel = () => {
         if (!window.confirm('Remove this admin?')) return;
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE}/admin/users/${adminId}`, {
+            const response = await fetch(`${API_BASE_URL}/admin/users/${adminId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
