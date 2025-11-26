@@ -460,6 +460,331 @@ const AdminPanel = () => {
         navigate('/login-choice');
     };
 
+    // Define styles inside component to use isMobile and isTablet
+    const styles = {
+        container: {
+            backgroundColor: '#f8fafc',
+            minHeight: '100vh'
+        },
+        header: {
+            backgroundColor: '#2563eb',
+            color: 'white',
+            padding: isMobile ? '15px' : '30px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? '15px' : '0'
+        },
+        title: {
+            margin: '0',
+            fontSize: isMobile ? '20px' : isTablet ? '24px' : '32px'
+        },
+        subtitle: {
+            margin: '5px 0 0 0',
+            fontSize: isMobile ? '12px' : '14px',
+            opacity: 0.9
+        },
+        logoutBtn: {
+            backgroundColor: '#ef4444',
+            color: 'white',
+            padding: isMobile ? '8px 12px' : '10px 20px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: isMobile ? '12px' : '14px',
+            whiteSpace: 'nowrap'
+        },
+        alert: {
+            margin: isMobile ? '10px' : '20px',
+            padding: isMobile ? '10px 15px' : '15px 20px',
+            borderRadius: '8px',
+            fontSize: isMobile ? '12px' : '14px'
+        },
+        layout: {
+            display: 'flex',
+            minHeight: 'calc(100vh - 120px)',
+            flexDirection: isMobile ? 'column' : 'row'
+        },
+        sidebar: {
+            width: isMobile ? '100%' : isTablet ? '180px' : '250px',
+            backgroundColor: 'white',
+            padding: isMobile ? '10px' : '20px',
+            borderRight: isMobile ? 'none' : '1px solid #e2e8f0',
+            borderBottom: isMobile ? '1px solid #e2e8f0' : 'none',
+            display: 'flex',
+            flexDirection: isMobile ? 'row' : 'column',
+            gap: isMobile ? '5px' : '10px',
+            overflowX: isMobile ? 'auto' : 'visible',
+            overflowY: isMobile ? 'visible' : 'auto'
+        },
+        navBtn: {
+            padding: isMobile ? '8px 12px' : isTablet ? '10px 12px' : '12px 16px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            color: 'white',
+            transition: 'all 0.2s',
+            fontSize: isMobile ? '11px' : '14px',
+            whiteSpace: 'nowrap',
+            flex: isMobile ? '1' : 'auto'
+        },
+        content: {
+            flex: 1,
+            padding: isMobile ? '15px' : isTablet ? '20px' : '30px',
+            overflowY: 'auto'
+        },
+        section: {
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: isMobile ? '15px' : isTablet ? '20px' : '30px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            marginBottom: isMobile ? '15px' : '0'
+        },
+        sectionTitle: {
+            fontSize: isMobile ? '18px' : isTablet ? '22px' : '28px',
+            marginBottom: isMobile ? '15px' : '30px',
+            color: '#1e293b'
+        },
+        statsGrid: {
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: isMobile ? '10px' : '20px'
+        },
+        stat: {
+            padding: isMobile ? '15px' : '20px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '8px'
+        },
+        statNumber: {
+            fontSize: isMobile ? '24px' : isTablet ? '28px' : '36px',
+            fontWeight: 'bold',
+            color: '#1e293b'
+        },
+        statLabel: {
+            fontSize: isMobile ? '12px' : '14px',
+            color: '#64748b',
+            marginTop: '8px'
+        },
+        formCard: {
+            backgroundColor: '#f8fafc',
+            padding: isMobile ? '15px' : '20px',
+            borderRadius: '8px',
+            marginBottom: isMobile ? '15px' : '20px'
+        },
+        form: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isMobile ? '10px' : '15px',
+            marginTop: isMobile ? '10px' : '15px'
+        },
+        formGrid: {
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: isMobile ? '10px' : '15px',
+            marginTop: isMobile ? '10px' : '15px'
+        },
+        input: {
+            padding: isMobile ? '10px 12px' : '12px 16px',
+            border: '1px solid #cbd5e1',
+            borderRadius: '8px',
+            fontFamily: 'inherit',
+            fontSize: isMobile ? '13px' : '14px',
+            width: '100%',
+            boxSizing: 'border-box'
+        },
+        submitBtn: {
+            backgroundColor: '#10b981',
+            color: 'white',
+            padding: isMobile ? '10px 16px' : '12px 24px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            fontSize: isMobile ? '12px' : '14px',
+            width: '100%',
+            boxSizing: 'border-box'
+        },
+        listCard: {
+            marginTop: isMobile ? '15px' : '30px'
+        },
+        itemsList: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isMobile ? '8px' : '10px',
+            marginTop: isMobile ? '10px' : '15px'
+        },
+        item: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            padding: isMobile ? '10px' : '15px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '8px',
+            borderLeft: '4px solid #2563eb',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? '8px' : '0'
+        },
+        itemEmail: {
+            fontSize: isMobile ? '10px' : '12px',
+            color: '#64748b',
+            margin: '5px 0 0 0',
+            width: '100%'
+        },
+        deleteBtn: {
+            backgroundColor: '#ef4444',
+            color: 'white',
+            padding: isMobile ? '6px 10px' : '8px 16px',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            fontSize: isMobile ? '11px' : '12px',
+            whiteSpace: 'nowrap'
+        },
+        editBtn: {
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            padding: isMobile ? '6px 10px' : '8px 16px',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            fontSize: isMobile ? '11px' : '12px',
+            whiteSpace: 'nowrap'
+        },
+        cancelBtn: {
+            backgroundColor: '#6b7280',
+            color: 'white',
+            padding: isMobile ? '10px 16px' : '12px 24px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            fontSize: isMobile ? '12px' : '14px',
+            width: '100%',
+            boxSizing: 'border-box'
+        },
+        tableContainer: {
+            overflowX: 'auto',
+            marginTop: isMobile ? '10px' : '20px'
+        },
+        table: {
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: isMobile ? '12px' : '14px'
+        },
+        th: {
+            padding: isMobile ? '8px 10px' : '12px 16px',
+            textAlign: 'left',
+            backgroundColor: '#f8fafc',
+            borderBottom: '2px solid #e2e8f0',
+            fontWeight: '600'
+        },
+        tr: {
+            borderBottom: '1px solid #e2e8f0'
+        },
+        td: {
+            padding: isMobile ? '8px 10px' : '12px 16px'
+        },
+        badge: {
+            padding: '4px 12px',
+            borderRadius: '20px',
+            color: 'white',
+            fontSize: isMobile ? '10px' : '12px',
+            fontWeight: '600'
+        },
+        eventsList: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isMobile ? '10px' : '15px',
+            marginTop: isMobile ? '10px' : '15px'
+        },
+        eventItem: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            padding: isMobile ? '10px' : '15px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '8px',
+            borderLeft: '4px solid #f59e0b',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? '8px' : '0'
+        },
+        premiumGrid: {
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: isMobile ? '15px' : '20px',
+            marginTop: isMobile ? '15px' : '20px'
+        },
+        premiumCard: {
+            backgroundColor: '#f8fafc',
+            padding: isMobile ? '15px' : '25px',
+            borderRadius: '12px',
+            border: '2px solid #e2e8f0',
+            textAlign: 'center'
+        },
+        premiumIcon: {
+            fontSize: isMobile ? '32px' : '48px',
+            marginBottom: isMobile ? '10px' : '15px'
+        },
+        premiumList: {
+            listStyle: 'none',
+            padding: 0,
+            marginTop: isMobile ? '10px' : '15px',
+            textAlign: 'left'
+        },
+        premiumPrice: {
+            fontSize: isMobile ? '16px' : '20px',
+            fontWeight: 'bold',
+            color: '#2563eb',
+            marginTop: isMobile ? '10px' : '15px'
+        },
+        reportGrid: {
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: isMobile ? '15px' : '20px',
+            marginTop: isMobile ? '15px' : '20px'
+        },
+        reportCard: {
+            backgroundColor: '#f0f9ff',
+            padding: isMobile ? '15px' : '20px',
+            borderRadius: '12px',
+            borderLeft: '4px solid #2563eb',
+            textAlign: 'center'
+        },
+        reportStat: {
+            fontSize: isMobile ? '28px' : '40px',
+            fontWeight: 'bold',
+            color: '#2563eb',
+            marginTop: isMobile ? '8px' : '10px'
+        },
+        modal: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2000
+        },
+        modalContent: {
+            backgroundColor: 'white',
+            padding: isMobile ? '15px' : '30px',
+            borderRadius: '12px',
+            maxWidth: '500px',
+            width: isMobile ? '95%' : '90%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
+        }
+    };
+
     return (
         <div style={styles.container}>
             {/* Header */}
@@ -958,330 +1283,6 @@ const AdminPanel = () => {
             </div>
         </div>
     );
-};
-
-const styles = {
-    container: {
-        backgroundColor: '#f8fafc',
-        minHeight: '100vh'
-    },
-    header: {
-        backgroundColor: '#2563eb',
-        color: 'white',
-        padding: isMobile ? '15px' : '30px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? '15px' : '0'
-    },
-    title: {
-        margin: '0',
-        fontSize: isMobile ? '20px' : isTablet ? '24px' : '32px'
-    },
-    subtitle: {
-        margin: '5px 0 0 0',
-        fontSize: isMobile ? '12px' : '14px',
-        opacity: 0.9
-    },
-    logoutBtn: {
-        backgroundColor: '#ef4444',
-        color: 'white',
-        padding: isMobile ? '8px 12px' : '10px 20px',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: isMobile ? '12px' : '14px',
-        whiteSpace: 'nowrap'
-    },
-    alert: {
-        margin: isMobile ? '10px' : '20px',
-        padding: isMobile ? '10px 15px' : '15px 20px',
-        borderRadius: '8px',
-        fontSize: isMobile ? '12px' : '14px'
-    },
-    layout: {
-        display: 'flex',
-        minHeight: 'calc(100vh - 120px)',
-        flexDirection: isMobile ? 'column' : 'row'
-    },
-    sidebar: {
-        width: isMobile ? '100%' : isTablet ? '180px' : '250px',
-        backgroundColor: 'white',
-        padding: isMobile ? '10px' : '20px',
-        borderRight: isMobile ? 'none' : '1px solid #e2e8f0',
-        borderBottom: isMobile ? '1px solid #e2e8f0' : 'none',
-        display: 'flex',
-        flexDirection: isMobile ? 'row' : 'column',
-        gap: isMobile ? '5px' : '10px',
-        overflowX: isMobile ? 'auto' : 'visible',
-        overflowY: isMobile ? 'visible' : 'auto'
-    },
-    navBtn: {
-        padding: isMobile ? '8px 12px' : isTablet ? '10px 12px' : '12px 16px',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontWeight: '600',
-        color: 'white',
-        transition: 'all 0.2s',
-        fontSize: isMobile ? '11px' : '14px',
-        whiteSpace: 'nowrap',
-        flex: isMobile ? '1' : 'auto'
-    },
-    content: {
-        flex: 1,
-        padding: isMobile ? '15px' : isTablet ? '20px' : '30px',
-        overflowY: 'auto'
-    },
-    section: {
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        padding: isMobile ? '15px' : isTablet ? '20px' : '30px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-        marginBottom: isMobile ? '15px' : '0'
-    },
-    sectionTitle: {
-        fontSize: isMobile ? '18px' : isTablet ? '22px' : '28px',
-        marginBottom: isMobile ? '15px' : '30px',
-        color: '#1e293b'
-    },
-    statsGrid: {
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: isMobile ? '10px' : '20px'
-    },
-    stat: {
-        padding: isMobile ? '15px' : '20px',
-        backgroundColor: '#f8fafc',
-        borderRadius: '8px'
-    },
-    statNumber: {
-        fontSize: isMobile ? '24px' : isTablet ? '28px' : '36px',
-        fontWeight: 'bold',
-        color: '#1e293b'
-    },
-    statLabel: {
-        fontSize: isMobile ? '12px' : '14px',
-        color: '#64748b',
-        marginTop: '8px'
-    },
-    formCard: {
-        backgroundColor: '#f8fafc',
-        padding: isMobile ? '15px' : '20px',
-        borderRadius: '8px',
-        marginBottom: isMobile ? '15px' : '20px'
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: isMobile ? '10px' : '15px',
-        marginTop: isMobile ? '10px' : '15px'
-    },
-    formGrid: {
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: isMobile ? '10px' : '15px',
-        marginTop: isMobile ? '10px' : '15px'
-    },
-    input: {
-        padding: isMobile ? '10px 12px' : '12px 16px',
-        border: '1px solid #cbd5e1',
-        borderRadius: '8px',
-        fontFamily: 'inherit',
-        fontSize: isMobile ? '13px' : '14px',
-        width: '100%',
-        boxSizing: 'border-box'
-    },
-    submitBtn: {
-        backgroundColor: '#10b981',
-        color: 'white',
-        padding: isMobile ? '10px 16px' : '12px 24px',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontWeight: '600',
-        fontSize: isMobile ? '12px' : '14px',
-        width: '100%',
-        boxSizing: 'border-box'
-    },
-    listCard: {
-        marginTop: isMobile ? '15px' : '30px'
-    },
-    itemsList: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: isMobile ? '8px' : '10px',
-        marginTop: isMobile ? '10px' : '15px'
-    },
-    item: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        padding: isMobile ? '10px' : '15px',
-        backgroundColor: '#f8fafc',
-        borderRadius: '8px',
-        borderLeft: '4px solid #2563eb',
-        flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? '8px' : '0'
-    },
-    itemEmail: {
-        fontSize: isMobile ? '10px' : '12px',
-        color: '#64748b',
-        margin: '5px 0 0 0',
-        width: '100%'
-    },
-    deleteBtn: {
-        backgroundColor: '#ef4444',
-        color: 'white',
-        padding: isMobile ? '6px 10px' : '8px 16px',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontWeight: '600',
-        fontSize: isMobile ? '11px' : '12px',
-        whiteSpace: 'nowrap'
-    },
-    editBtn: {
-        backgroundColor: '#3b82f6',
-        color: 'white',
-        padding: isMobile ? '6px 10px' : '8px 16px',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontWeight: '600',
-        fontSize: isMobile ? '11px' : '12px',
-        whiteSpace: 'nowrap'
-    },
-    cancelBtn: {
-        backgroundColor: '#6b7280',
-        color: 'white',
-        padding: isMobile ? '10px 16px' : '12px 24px',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontWeight: '600',
-        fontSize: isMobile ? '12px' : '14px',
-        width: '100%',
-        boxSizing: 'border-box'
-    },
-    tableContainer: {
-        overflowX: 'auto',
-        marginTop: isMobile ? '10px' : '20px'
-    },
-    table: {
-        width: '100%',
-        borderCollapse: 'collapse',
-        fontSize: isMobile ? '12px' : '14px'
-    },
-    th: {
-        padding: isMobile ? '8px 10px' : '12px 16px',
-        textAlign: 'left',
-        backgroundColor: '#f8fafc',
-        borderBottom: '2px solid #e2e8f0',
-        fontWeight: '600'
-    },
-    tr: {
-        borderBottom: '1px solid #e2e8f0'
-    },
-    td: {
-        padding: isMobile ? '8px 10px' : '12px 16px'
-    },
-    badge: {
-        padding: '4px 12px',
-        borderRadius: '20px',
-        color: 'white',
-        fontSize: isMobile ? '10px' : '12px',
-        fontWeight: '600'
-    },
-    eventsList: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: isMobile ? '10px' : '15px',
-        marginTop: isMobile ? '10px' : '15px'
-    },
-    eventItem: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        padding: isMobile ? '10px' : '15px',
-        backgroundColor: '#f8fafc',
-        borderRadius: '8px',
-        borderLeft: '4px solid #f59e0b',
-        flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? '8px' : '0'
-    },
-    premiumGrid: {
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: isMobile ? '15px' : '20px',
-        marginTop: isMobile ? '15px' : '20px'
-    },
-    premiumCard: {
-        backgroundColor: '#f8fafc',
-        padding: isMobile ? '15px' : '25px',
-        borderRadius: '12px',
-        border: '2px solid #e2e8f0',
-        textAlign: 'center'
-    },
-    premiumIcon: {
-        fontSize: isMobile ? '32px' : '48px',
-        marginBottom: isMobile ? '10px' : '15px'
-    },
-    premiumList: {
-        listStyle: 'none',
-        padding: 0,
-        marginTop: isMobile ? '10px' : '15px',
-        textAlign: 'left'
-    },
-    premiumPrice: {
-        fontSize: isMobile ? '16px' : '20px',
-        fontWeight: 'bold',
-        color: '#2563eb',
-        marginTop: isMobile ? '10px' : '15px'
-    },
-    reportGrid: {
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: isMobile ? '15px' : '20px',
-        marginTop: isMobile ? '15px' : '20px'
-    },
-    reportCard: {
-        backgroundColor: '#f0f9ff',
-        padding: isMobile ? '15px' : '20px',
-        borderRadius: '12px',
-        borderLeft: '4px solid #2563eb',
-        textAlign: 'center'
-    },
-    reportStat: {
-        fontSize: isMobile ? '28px' : '40px',
-        fontWeight: 'bold',
-        color: '#2563eb',
-        marginTop: isMobile ? '8px' : '10px'
-    },
-    modal: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 2000
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        padding: isMobile ? '15px' : '30px',
-        borderRadius: '12px',
-        maxWidth: '500px',
-        width: isMobile ? '95%' : '90%',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
-    }
 };
 
 export default AdminPanel;
