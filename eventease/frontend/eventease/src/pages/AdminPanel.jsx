@@ -168,7 +168,6 @@ const AdminPanel = () => {
         e.preventDefault();
         setError('');
         setSuccessMsg('');
-        const API_BASE = '/api';
 
         try {
             const token = localStorage.getItem('token');
@@ -176,7 +175,7 @@ const AdminPanel = () => {
             if (isEditingEvent) {
                 // Update event
                 console.log('📡 AdminPanel: Updating event', editingEventId);
-                const response = await fetch(`${API_BASE}/admin/events/${editingEventId}`, {
+                const response = await fetch(`${API_BASE_URL}/admin/events/${editingEventId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -189,7 +188,13 @@ const AdminPanel = () => {
                     })
                 });
 
-                const data = await response.json();
+                let data = {};
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    // Response might be empty
+                }
+                
                 if (response.ok) {
                     console.log('✅ AdminPanel: Event updated successfully');
                     setSuccessMsg('✅ Event updated successfully!');
@@ -233,7 +238,13 @@ const AdminPanel = () => {
                     })
                 });
 
-                const data = await response.json();
+                let data = {};
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    // Response might be empty
+                }
+                
                 if (response.ok) {
                     console.log('✅ AdminPanel: Event created successfully');
                     setSuccessMsg('✅ Event created successfully!');
@@ -350,11 +361,10 @@ const AdminPanel = () => {
 
     const handleDeleteEvent = async (eventId) => {
         if (!window.confirm('Are you sure you want to delete this event?')) return;
-        const API_BASE = '/api';
         try {
             console.log('📡 AdminPanel: Deleting event', eventId);
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE}/admin/events/${eventId}`, {
+            const response = await fetch(`${API_BASE_URL}/admin/events/${eventId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -379,7 +389,6 @@ const AdminPanel = () => {
         e.preventDefault();
         setError('');
         setSuccessMsg('');
-        const API_BASE = '/api';
 
         if (!notificationForm.userId || !notificationForm.subject || !notificationForm.message) {
             setError('❌ Please fill in all fields');
@@ -388,7 +397,7 @@ const AdminPanel = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE}/notifications/send`, {
+            const response = await fetch(`${API_BASE_URL}/notifications/send`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
