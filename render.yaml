@@ -19,11 +19,16 @@ services:
         scope: build,runtime
         value: production
 
-  - type: static
+  - type: web
     name: eventease-frontend
-    buildCommand: cd eventease/frontend/eventease && npm install && npm run build && cp public/_redirects dist/
-    staticPublishPath: eventease/frontend/eventease/dist
+    env: node
+    plan: free
+    buildCommand: cd eventease/frontend/eventease && npm install && npm run build
+    startCommand: cd eventease/frontend/eventease && node server.js
     envVars:
       - key: VITE_API_URL
         scope: build
         value: https://eventease-backend-loau.onrender.com/api
+      - key: PORT
+        scope: runtime
+        value: 3000
