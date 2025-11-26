@@ -26,6 +26,13 @@ const getApiBaseUrl = () => {
     return backendUrl;
   }
   
+  // Fallback: if on eventease-gy5c.onrender.com specifically
+  if (window.location.hostname === 'eventease-gy5c.onrender.com') {
+    const backendUrl = 'https://eventease-backend-loau.onrender.com/api';
+    console.log('⚠️ Detected specific Render frontend domain, using backend URL:', backendUrl);
+    return backendUrl;
+  }
+  
   console.log('⚠️ Falling back to localhost');
   return 'http://localhost:5000/api';
 };
