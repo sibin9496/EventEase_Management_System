@@ -31,9 +31,7 @@ import {
 import { eventService } from '../services/events';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
-
-// API Base URL - use /api proxy for development
-const API_BASE_URL = '/api';
+import { API_BASE_URL } from '../config/api';
 
 // Simple registration component with payment options
 const SimpleEventRegistration = () => {
@@ -275,11 +273,32 @@ const SimpleEventRegistration = () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
+                let errorData;
+                try {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        errorData = await response.json();
+                    } else {
+                        errorData = { message: `Registration failed with status ${response.status}` };
+                    }
+                } catch (e) {
+                    errorData = { message: `Registration failed with status ${response.status}` };
+                }
                 throw new Error(errorData.message || 'Registration failed');
             }
 
-            const result = await response.json();
+            let result;
+            try {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    throw new Error('Invalid response format from server');
+                }
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                throw new Error('Failed to process server response');
+            }
             setRegistrationSuccess(true);
             setShowPaymentModal(false);
             
