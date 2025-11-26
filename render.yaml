@@ -21,7 +21,7 @@ services:
 
   - type: static
     name: eventease-frontend
-    buildCommand: cd eventease/frontend/eventease && npm install && npm run build
+    buildCommand: cd eventease/frontend/eventease && npm install && npm run build && cp public/_redirects dist/
     staticPublishPath: eventease/frontend/eventease/dist
     envVars:
       - key: VITE_API_URL
