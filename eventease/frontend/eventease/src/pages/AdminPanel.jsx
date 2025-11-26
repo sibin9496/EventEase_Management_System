@@ -3,6 +3,15 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
 
+const VALID_CATEGORIES = [
+    'Technology', 'Business', 'Music', 'Arts', 'Sports', 
+    'Food & Drink', 'Education', 'Health', 'Marriage', 'Wedding',
+    'Anniversary', 'Engagement', 'Bridal Shower', 'Bachelor Party', 'Mehendi', 
+    'Weddings', 'Anniversaries', 'Corporate Events', 'Birthdays', 'Festivals',
+    'Cultural Events', 'Sports Events', 'Educational Events', 'Religious Events', 
+    'Award Ceremonies', 'Other'
+];
+
 const AdminPanel = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -651,14 +660,17 @@ const AdminPanel = () => {
                                         style={styles.input}
                                         required
                                     />
-                                    <input
-                                        type="text"
-                                        placeholder="Category"
+                                    <select
                                         value={eventForm.category}
                                         onChange={(e) => setEventForm({...eventForm, category: e.target.value})}
                                         style={styles.input}
                                         required
-                                    />
+                                    >
+                                        <option value="">Select Category</option>
+                                        {VALID_CATEGORIES.map((cat) => (
+                                            <option key={cat} value={cat}>{cat}</option>
+                                        ))}
+                                    </select>
                                     <textarea
                                         placeholder="Description"
                                         value={eventForm.description}
