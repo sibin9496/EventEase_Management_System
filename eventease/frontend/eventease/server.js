@@ -1,44 +1,51 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const distPath = path.join(__dirname, 'dist');
+const indexPath = path.join(distPath, 'index.html');
 
-console.log(`Starting frontend server...`);
+console.log(`\n=== Frontend Server Starting ===`);
 console.log(`PORT: ${PORT}`);
-console.log(`__dirname: ${__dirname}`);
-console.log(`dist path: ${path.join(__dirname, 'dist')}`);
+console.log(`DIST_PATH: ${distPath}`);
+console.log(`INDEX_PATH: ${indexPath}`);
+console.log(`DIST exists: ${fs.existsSync(distPath)}`);
+console.log(`INDEX.html exists: ${fs.existsSync(indexPath)}`);
+console.log(`============================\n`);
+
+// Middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
+  next();
+});
 
 // Serve static files from dist folder
-app.use(express.static(path.join(__dirname, 'dist'), {
-  maxAge: '1d',
-  etag: false
-}));
+app.use(express.static(distPath));
 
 // SPA fallback - serve index.html for all non-file routes
 app.get('*', (req, res) => {
-  console.log(`Received request: ${req.method} ${req.path}`);
-  
-  // Don't redirect API or file requests
-  if (req.path.startsWith('/api') || req.path.match(/\.\w+$/)) {
-    console.log(`Not found (file or API): ${req.path}`);
+  // Don't redirect file requests (they should 404)
+  if (req.path.match(/\.\w+$/) || req.path.startsWith('/api')) {
+    console.log(`→ 404 (file or API route)`);
     return res.status(404).send('Not Found');
   }
   
-  const indexPath = path.join(__dirname, 'dist', 'index.html');
-  console.log(`Serving index.html from: ${indexPath}`);
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error(`Error serving index.html:`, err);
-      res.status(500).send('Server Error');
-    }
-  });
+  console.log(`→ Serving index.html`);
+  res.sendFile(indexPath);
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Frontend server running on port ${PORT}`);
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(`Error:`, err);
+  res.status(500).send('Server Error');
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Frontend server listening on port ${PORT}`);
 });
