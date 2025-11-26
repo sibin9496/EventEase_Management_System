@@ -23,9 +23,8 @@ services:
     name: eventease-frontend
     env: node
     plan: free
-    rootDir: eventease/frontend/eventease
-    buildCommand: npm install && npm run build
-    startCommand: node server.js
+    buildCommand: cd eventease/frontend/eventease && npm install && npm run build
+    startCommand: cd eventease/frontend/eventease && npm start
     envVars:
       - key: VITE_API_URL
         scope: build
