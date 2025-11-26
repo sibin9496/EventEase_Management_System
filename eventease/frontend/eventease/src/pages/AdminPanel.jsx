@@ -12,20 +12,23 @@ const VALID_CATEGORIES = [
     'Award Ceremonies', 'Other'
 ];
 
-// Add media query helper
-const getResponsiveStyles = () => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const isTablet = typeof window !== 'undefined' && window.innerWidth < 1024;
-    
-    return { isMobile, isTablet };
-};
-
 const AdminPanel = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [activeSection, setActiveSection] = useState('dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { isMobile, isTablet } = getResponsiveStyles();
+    const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+    
+    // Update window width on resize
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+    
+    const isMobile = windowWidth < 768;
+    const isTablet = windowWidth < 1024;
+    
     const [admins, setAdmins] = useState([]);
     const [users, setUsers] = useState([]);
     const [events, setEvents] = useState([]);
