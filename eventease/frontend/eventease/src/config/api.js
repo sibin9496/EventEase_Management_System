@@ -26,7 +26,7 @@ export const API_CONFIG = {
     DELAY: 1000,
     BACKOFF: 1.5
   },
-  HEALTH_CHECK_URL: '/api/health',
+  HEALTH_CHECK_URL: `${API_BASE_URL}/health`,
   HEALTH_CHECK_INTERVAL: 10000
 };
 

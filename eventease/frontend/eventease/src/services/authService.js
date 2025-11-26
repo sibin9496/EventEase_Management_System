@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+import { API_BASE_URL } from '../config/api.js';
 
 export const authService = {
     // Get stored token
@@ -15,7 +15,7 @@ export const authService = {
 
     // Login user
     login: async (email, password) => {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -31,7 +31,7 @@ export const authService = {
 
     // Register user
     register: async (name, email, password) => {
-        const response = await fetch(`${API_URL}/auth/register`, {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password })
@@ -53,7 +53,7 @@ export const authService = {
             throw new Error('No token found');
         }
 
-        const response = await fetch(`${API_URL}/auth/me`, {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

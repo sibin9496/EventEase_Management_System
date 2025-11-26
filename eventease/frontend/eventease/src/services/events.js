@@ -7,16 +7,16 @@ const getAuthHeaders = () => {
     };
 };
 
-// API Base URL - use /api proxy for development
-const API_URL = '/api';
+// Import API config to get the proper base URL
+import { API_BASE_URL } from '../config/api.js';
 
 // Events service - all methods properly exported
 export const eventService = {
     // Get all events
     getEvents: async () => {
         try {
-            console.log('📡 Fetching events from:', `${API_URL}/events`);
-            const response = await fetch(`${API_URL}/events`, {
+            console.log('📡 Fetching events from:', `${API_BASE_URL}/events`);
+            const response = await fetch(`${API_BASE_URL}/events`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -43,7 +43,7 @@ export const eventService = {
         try {
             const encodedQuery = encodeURIComponent(searchQuery);
             console.log('📡 EventService: Searching events with query:', searchQuery);
-            const response = await fetch(`${API_URL}/events?search=${encodedQuery}`, {
+            const response = await fetch(`${API_BASE_URL}/events?search=${encodedQuery}`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -77,7 +77,7 @@ export const eventService = {
             }
 
             console.log('📡 Fetching event:', id);
-            const response = await fetch(`${API_URL}/events/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/events/${id}`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -102,7 +102,7 @@ export const eventService = {
     // Create new event
     createEvent: async (eventData) => {
         try {
-            const response = await fetch(`${API_URL}/events`, {
+            const response = await fetch(`${API_BASE_URL}/events`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(eventData)
@@ -123,7 +123,7 @@ export const eventService = {
     // Get user's events
     getMyEvents: async () => {
         try {
-            const response = await fetch(`${API_URL}/events/user/my-events`, {
+            const response = await fetch(`${API_BASE_URL}/events/user/my-events`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -142,7 +142,7 @@ export const eventService = {
     // Update event
     updateEvent: async (id, eventData) => {
         try {
-            const response = await fetch(`${API_URL}/events/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/events/${id}`, {
                 method: 'PUT',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(eventData)
@@ -163,7 +163,7 @@ export const eventService = {
     // Delete event
     deleteEvent: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/events/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/events/${id}`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
@@ -182,7 +182,7 @@ export const eventService = {
     // Register for event
     registerForEvent: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/events/${id}/register`, {
+            const response = await fetch(`${API_BASE_URL}/events/${id}/register`, {
                 method: 'POST',
                 headers: getAuthHeaders()
             });

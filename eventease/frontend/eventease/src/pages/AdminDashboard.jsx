@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
@@ -39,10 +40,9 @@ const AdminDashboard = () => {
     const fetchAllData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const API_BASE = '/api';
             
             // Fetch users
-            const usersRes = await fetch(`${API_BASE}/admin/users`, {
+            const usersRes = await fetch(`${API_BASE_URL}/admin/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (usersRes.ok) {
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
             }
 
             // Fetch events
-            const eventsRes = await fetch(`${API_BASE}/admin/events`, {
+            const eventsRes = await fetch(`${API_BASE_URL}/admin/events`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (eventsRes.ok) {
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
             }
 
             // Fetch registrations
-            const registrationsRes = await fetch(`${API_BASE}/registrations`, {
+            const registrationsRes = await fetch(`${API_BASE_URL}/registrations`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (registrationsRes.ok) {

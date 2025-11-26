@@ -33,6 +33,7 @@ import {
     Layers
 } from '@mui/icons-material';
 import { eventService } from '../services/events';
+import { API_BASE_URL } from '../config/api';
 
 const CATEGORY_FILTERS = [
     { id: 'all', label: 'All', icon: Dashboard, dbValue: 'all' },
@@ -61,9 +62,9 @@ const Home = () => {
     const fetchEvents = async () => {
         try {
             setLoading(true);
-            console.log('📡 Home: Fetching events...');
+            console.log('📡 Home: Fetching events from:', `${API_BASE_URL}/events?limit=50`);
             // Fetch with limit=50 (max allowed by API)
-            const response = await fetch('/api/events?limit=50', {
+            const response = await fetch(`${API_BASE_URL}/events?limit=50`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
