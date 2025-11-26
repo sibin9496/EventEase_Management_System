@@ -12,10 +12,20 @@ const VALID_CATEGORIES = [
     'Award Ceremonies', 'Other'
 ];
 
+// Add media query helper
+const getResponsiveStyles = () => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const isTablet = typeof window !== 'undefined' && window.innerWidth < 1024;
+    
+    return { isMobile, isTablet };
+};
+
 const AdminPanel = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [activeSection, setActiveSection] = useState('dashboard');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { isMobile, isTablet } = getResponsiveStyles();
     const [admins, setAdmins] = useState([]);
     const [users, setUsers] = useState([]);
     const [events, setEvents] = useState([]);
@@ -955,187 +965,215 @@ const styles = {
     header: {
         backgroundColor: '#2563eb',
         color: 'white',
-        padding: '30px',
+        padding: isMobile ? '15px' : '30px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: isMobile ? 'flex-start' : 'center',
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: isMobile ? '15px' : '0'
     },
     title: {
         margin: '0',
-        fontSize: '32px'
+        fontSize: isMobile ? '20px' : isTablet ? '24px' : '32px'
     },
     subtitle: {
         margin: '5px 0 0 0',
-        fontSize: '14px',
+        fontSize: isMobile ? '12px' : '14px',
         opacity: 0.9
     },
     logoutBtn: {
         backgroundColor: '#ef4444',
         color: 'white',
-        padding: '10px 20px',
+        padding: isMobile ? '8px 12px' : '10px 20px',
         border: 'none',
         borderRadius: '8px',
         cursor: 'pointer',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: isMobile ? '12px' : '14px',
+        whiteSpace: 'nowrap'
     },
     alert: {
-        margin: '20px',
-        padding: '15px 20px',
+        margin: isMobile ? '10px' : '20px',
+        padding: isMobile ? '10px 15px' : '15px 20px',
         borderRadius: '8px',
-        fontSize: '14px'
+        fontSize: isMobile ? '12px' : '14px'
     },
     layout: {
         display: 'flex',
-        minHeight: 'calc(100vh - 120px)'
+        minHeight: 'calc(100vh - 120px)',
+        flexDirection: isMobile ? 'column' : 'row'
     },
     sidebar: {
-        width: '250px',
+        width: isMobile ? '100%' : isTablet ? '180px' : '250px',
         backgroundColor: 'white',
-        padding: '20px',
-        borderRight: '1px solid #e2e8f0',
+        padding: isMobile ? '10px' : '20px',
+        borderRight: isMobile ? 'none' : '1px solid #e2e8f0',
+        borderBottom: isMobile ? '1px solid #e2e8f0' : 'none',
         display: 'flex',
-        flexDirection: 'column',
-        gap: '10px'
+        flexDirection: isMobile ? 'row' : 'column',
+        gap: isMobile ? '5px' : '10px',
+        overflowX: isMobile ? 'auto' : 'visible',
+        overflowY: isMobile ? 'visible' : 'auto'
     },
     navBtn: {
-        padding: '12px 16px',
+        padding: isMobile ? '8px 12px' : isTablet ? '10px 12px' : '12px 16px',
         border: 'none',
         borderRadius: '8px',
         cursor: 'pointer',
         fontWeight: '600',
         color: 'white',
-        transition: 'all 0.2s'
+        transition: 'all 0.2s',
+        fontSize: isMobile ? '11px' : '14px',
+        whiteSpace: 'nowrap',
+        flex: isMobile ? '1' : 'auto'
     },
     content: {
         flex: 1,
-        padding: '30px',
+        padding: isMobile ? '15px' : isTablet ? '20px' : '30px',
         overflowY: 'auto'
     },
     section: {
         backgroundColor: 'white',
         borderRadius: '12px',
-        padding: '30px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+        padding: isMobile ? '15px' : isTablet ? '20px' : '30px',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+        marginBottom: isMobile ? '15px' : '0'
     },
     sectionTitle: {
-        fontSize: '28px',
-        marginBottom: '30px',
+        fontSize: isMobile ? '18px' : isTablet ? '22px' : '28px',
+        marginBottom: isMobile ? '15px' : '30px',
         color: '#1e293b'
     },
     statsGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '20px'
+        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: isMobile ? '10px' : '20px'
     },
     stat: {
-        padding: '20px',
+        padding: isMobile ? '15px' : '20px',
         backgroundColor: '#f8fafc',
         borderRadius: '8px'
     },
     statNumber: {
-        fontSize: '36px',
+        fontSize: isMobile ? '24px' : isTablet ? '28px' : '36px',
         fontWeight: 'bold',
         color: '#1e293b'
     },
     statLabel: {
-        fontSize: '14px',
+        fontSize: isMobile ? '12px' : '14px',
         color: '#64748b',
         marginTop: '8px'
     },
     formCard: {
         backgroundColor: '#f8fafc',
-        padding: '20px',
+        padding: isMobile ? '15px' : '20px',
         borderRadius: '8px',
-        marginBottom: '20px'
+        marginBottom: isMobile ? '15px' : '20px'
     },
     form: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '15px',
-        marginTop: '15px'
+        gap: isMobile ? '10px' : '15px',
+        marginTop: isMobile ? '10px' : '15px'
     },
     formGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '15px',
-        marginTop: '15px'
+        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: isMobile ? '10px' : '15px',
+        marginTop: isMobile ? '10px' : '15px'
     },
     input: {
-        padding: '12px 16px',
+        padding: isMobile ? '10px 12px' : '12px 16px',
         border: '1px solid #cbd5e1',
         borderRadius: '8px',
         fontFamily: 'inherit',
-        fontSize: '14px'
+        fontSize: isMobile ? '13px' : '14px',
+        width: '100%',
+        boxSizing: 'border-box'
     },
     submitBtn: {
         backgroundColor: '#10b981',
         color: 'white',
-        padding: '12px 24px',
+        padding: isMobile ? '10px 16px' : '12px 24px',
         border: 'none',
         borderRadius: '8px',
         cursor: 'pointer',
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: isMobile ? '12px' : '14px',
+        width: '100%',
+        boxSizing: 'border-box'
     },
     listCard: {
-        marginTop: '30px'
+        marginTop: isMobile ? '15px' : '30px'
     },
     itemsList: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
-        marginTop: '15px'
+        gap: isMobile ? '8px' : '10px',
+        marginTop: isMobile ? '10px' : '15px'
     },
     item: {
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '15px',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        padding: isMobile ? '10px' : '15px',
         backgroundColor: '#f8fafc',
         borderRadius: '8px',
-        borderLeft: '4px solid #2563eb'
+        borderLeft: '4px solid #2563eb',
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: isMobile ? '8px' : '0'
     },
     itemEmail: {
-        fontSize: '12px',
+        fontSize: isMobile ? '10px' : '12px',
         color: '#64748b',
-        margin: '5px 0 0 0'
+        margin: '5px 0 0 0',
+        width: '100%'
     },
     deleteBtn: {
         backgroundColor: '#ef4444',
         color: 'white',
-        padding: '8px 16px',
+        padding: isMobile ? '6px 10px' : '8px 16px',
         border: 'none',
         borderRadius: '6px',
         cursor: 'pointer',
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: isMobile ? '11px' : '12px',
+        whiteSpace: 'nowrap'
     },
     editBtn: {
         backgroundColor: '#3b82f6',
         color: 'white',
-        padding: '8px 16px',
+        padding: isMobile ? '6px 10px' : '8px 16px',
         border: 'none',
         borderRadius: '6px',
         cursor: 'pointer',
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: isMobile ? '11px' : '12px',
+        whiteSpace: 'nowrap'
     },
     cancelBtn: {
         backgroundColor: '#6b7280',
         color: 'white',
-        padding: '12px 24px',
+        padding: isMobile ? '10px 16px' : '12px 24px',
         border: 'none',
         borderRadius: '8px',
         cursor: 'pointer',
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: isMobile ? '12px' : '14px',
+        width: '100%',
+        boxSizing: 'border-box'
     },
     tableContainer: {
         overflowX: 'auto',
-        marginTop: '20px'
+        marginTop: isMobile ? '10px' : '20px'
     },
     table: {
         width: '100%',
-        borderCollapse: 'collapse'
+        borderCollapse: 'collapse',
+        fontSize: isMobile ? '12px' : '14px'
     },
     th: {
-        padding: '12px 16px',
+        padding: isMobile ? '8px 10px' : '12px 16px',
         textAlign: 'left',
         backgroundColor: '#f8fafc',
         borderBottom: '2px solid #e2e8f0',
@@ -1145,77 +1183,79 @@ const styles = {
         borderBottom: '1px solid #e2e8f0'
     },
     td: {
-        padding: '12px 16px'
+        padding: isMobile ? '8px 10px' : '12px 16px'
     },
     badge: {
         padding: '4px 12px',
         borderRadius: '20px',
         color: 'white',
-        fontSize: '12px',
+        fontSize: isMobile ? '10px' : '12px',
         fontWeight: '600'
     },
     eventsList: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '15px',
-        marginTop: '15px'
+        gap: isMobile ? '10px' : '15px',
+        marginTop: isMobile ? '10px' : '15px'
     },
     eventItem: {
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '15px',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        padding: isMobile ? '10px' : '15px',
         backgroundColor: '#f8fafc',
         borderRadius: '8px',
-        borderLeft: '4px solid #f59e0b'
+        borderLeft: '4px solid #f59e0b',
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: isMobile ? '8px' : '0'
     },
     premiumGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '20px',
-        marginTop: '20px'
+        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: isMobile ? '15px' : '20px',
+        marginTop: isMobile ? '15px' : '20px'
     },
     premiumCard: {
         backgroundColor: '#f8fafc',
-        padding: '25px',
+        padding: isMobile ? '15px' : '25px',
         borderRadius: '12px',
         border: '2px solid #e2e8f0',
         textAlign: 'center'
     },
     premiumIcon: {
-        fontSize: '48px',
-        marginBottom: '15px'
+        fontSize: isMobile ? '32px' : '48px',
+        marginBottom: isMobile ? '10px' : '15px'
     },
     premiumList: {
         listStyle: 'none',
         padding: 0,
-        marginTop: '15px',
+        marginTop: isMobile ? '10px' : '15px',
         textAlign: 'left'
     },
     premiumPrice: {
-        fontSize: '20px',
+        fontSize: isMobile ? '16px' : '20px',
         fontWeight: 'bold',
         color: '#2563eb',
-        marginTop: '15px'
+        marginTop: isMobile ? '10px' : '15px'
     },
     reportGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '20px',
-        marginTop: '20px'
+        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: isMobile ? '15px' : '20px',
+        marginTop: isMobile ? '15px' : '20px'
     },
     reportCard: {
         backgroundColor: '#f0f9ff',
-        padding: '20px',
+        padding: isMobile ? '15px' : '20px',
         borderRadius: '12px',
         borderLeft: '4px solid #2563eb',
         textAlign: 'center'
     },
     reportStat: {
-        fontSize: '40px',
+        fontSize: isMobile ? '28px' : '40px',
         fontWeight: 'bold',
         color: '#2563eb',
-        marginTop: '10px'
+        marginTop: isMobile ? '8px' : '10px'
     },
     modal: {
         position: 'fixed',
@@ -1231,10 +1271,10 @@ const styles = {
     },
     modalContent: {
         backgroundColor: 'white',
-        padding: '30px',
+        padding: isMobile ? '15px' : '30px',
         borderRadius: '12px',
         maxWidth: '500px',
-        width: '90%',
+        width: isMobile ? '95%' : '90%',
         maxHeight: '90vh',
         overflowY: 'auto',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
