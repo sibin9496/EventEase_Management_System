@@ -4,18 +4,25 @@
 const getApiBaseUrl = () => {
   // In development: use /api proxy (configured in vite.config.js)
   if (import.meta.env.DEV) {
+    console.log('🔧 DEV MODE: Using /api proxy');
     return '/api';
   }
   
   // In production: use environment variable or direct URL
+  console.log('📡 PRODUCTION MODE');
+  console.log('   VITE_API_URL env var:', import.meta.env.VITE_API_URL);
+  
   if (import.meta.env.VITE_API_URL) {
+    console.log('✅ Using VITE_API_URL:', import.meta.env.VITE_API_URL);
     return import.meta.env.VITE_API_URL;
   }
   
+  console.log('⚠️ VITE_API_URL not set, using fallback');
   return 'http://localhost:5000/api';
 };
 
 export const API_BASE_URL = getApiBaseUrl();
+console.log('🚀 API_BASE_URL initialized as:', API_BASE_URL);
 
 // API Configuration
 export const API_CONFIG = {

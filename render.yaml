@@ -26,4 +26,4 @@ services:
     envVars:
       - key: VITE_API_URL
         scope: build
-        value: https://eventease-backend.onrender.com/api
+        value: https://eventease-backend-loau.onrender.com/api
