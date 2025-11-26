@@ -1,9 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api.js';
 
 const AuthContext = createContext();
-
-// Get API Base URL - use /api proxy for development
-const API_BASE_URL = '/api';
 
 export const useAuth = () => {
     const context = useContext(AuthContext);

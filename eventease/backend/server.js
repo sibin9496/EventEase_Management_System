@@ -229,24 +229,29 @@ app.get('/api/events/:id', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log('📝 Login attempt for:', email);
 
         if (!email || !password) {
+            console.log('❌ Missing email or password');
             return res.status(400).json({ message: 'Email and password required' });
         }
 
         if (!dbConnected) {
+            console.log('❌ Database not connected');
             return res.status(503).json({ message: 'Database connecting' });
         }
 
         const user = await User.findOne({ email: email.toLowerCase() }).exec();
 
         if (!user) {
+            console.log('❌ User not found:', email);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
         if (!isPasswordCorrect) {
+            console.log('❌ Password incorrect for:', email);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
@@ -261,7 +266,7 @@ app.post('/api/auth/login', async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        res.json({
+        const responseData = {
             success: true,
             token,
             user: {
@@ -270,9 +275,13 @@ app.post('/api/auth/login', async (req, res) => {
                 name: user.name,
                 role: user.role
             }
-        });
+        };
+        
+        console.log('✅ Login successful for:', email);
+        console.log('📤 Sending response:', responseData);
+        res.json(responseData);
     } catch (err) {
-        console.error('Login error:', err);
+        console.error('❌ Login error:', err);
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
