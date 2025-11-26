@@ -225,6 +225,7 @@ const AdminPanel = () => {
             } else {
                 // Create new event
                 console.log('📡 AdminPanel: Creating new event');
+                console.log('📝 AdminPanel: Event form data:', eventForm);
                 const response = await fetch(`${API_BASE_URL}/admin/events`, {
                     method: 'POST',
                     headers: {
@@ -238,11 +239,24 @@ const AdminPanel = () => {
                     })
                 });
 
+                console.log('📡 AdminPanel: Create response status:', response.status);
+                console.log('📡 AdminPanel: Create response headers:', {
+                    'content-type': response.headers.get('content-type'),
+                    'content-length': response.headers.get('content-length')
+                });
+
                 let data = {};
-                try {
-                    data = await response.json();
-                } catch (e) {
-                    // Response might be empty
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    try {
+                        data = await response.json();
+                        console.log('📦 AdminPanel: Response data:', data);
+                    } catch (e) {
+                        console.error('❌ AdminPanel: Failed to parse JSON:', e.message);
+                        data = {};
+                    }
+                } else {
+                    console.warn('⚠️ AdminPanel: Response is not JSON, content-type:', contentType);
                 }
                 
                 if (response.ok) {
@@ -273,7 +287,8 @@ const AdminPanel = () => {
             }
         } catch (err) {
             console.error('❌ AdminPanel: Error in handleCreateEvent:', err);
-            setError('❌ Error: ' + err.message);
+            console.error('❌ AdminPanel: Error stack:', err.stack);
+            setError('❌ Error: ' + (err.message || 'Unknown error'));
         }
     };
 
