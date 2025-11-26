@@ -3,8 +3,8 @@ services:
     name: eventease-backend
     env: node
     plan: free
-    buildCommand: cd eventease/backend && npm install
-    startCommand: cd eventease/backend && npm start
+    buildCommand: npm install --prefix eventease/backend
+    startCommand: node server.js
     envVars:
       - key: MONGODB_URI
         scope: build,runtime
@@ -14,7 +14,7 @@ services:
         value: your_jwt_secret_key_change_in_production
       - key: PORT
         scope: build,runtime
-        value: 5000
+        value: 10000
       - key: NODE_ENV
         scope: build,runtime
         value: production
