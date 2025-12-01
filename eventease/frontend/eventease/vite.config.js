@@ -97,5 +97,10 @@ export default defineConfig({
         }
       }
     }
+  },
+  // Optimize assets
+  assetsInclude: ['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.gif', '**/*.webp'],
+  ssr: {
+    noExternal: ['@emotion/react', '@emotion/styled']
   }
 })

@@ -16,6 +16,7 @@ import {
     BookmarkBorder,
     Share
 } from '@mui/icons-material';
+import OptimizedImage from './OptimizedImage';
 
 const EventCard = ({ event, onBookmark, onRegister, index }) => {
     const navigate = useNavigate();
@@ -65,14 +66,14 @@ const EventCard = ({ event, onBookmark, onRegister, index }) => {
             }}
             onClick={handleCardClick}
         >
-            <CardMedia
-                component="img"
-                height="200"
-                image={event?.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400'}
+            <OptimizedImage
+                src={event?.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87'}
                 alt={event?.title || 'Event'}
-                sx={{ 
-                    objectFit: 'cover',
-                    position: 'relative'
+                height="200px"
+                width="100%"
+                objectFit="cover"
+                sx={{
+                    borderRadius: '4px 4px 0 0'
                 }}
             />
             

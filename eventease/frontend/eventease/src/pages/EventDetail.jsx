@@ -49,6 +49,7 @@ import { eventService } from '../services/events';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import EmptyState from '../components/UI/EmptyState';
 import EventCard from '../components/EventCard';
+import OptimizedImage from '../components/OptimizedImage';
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -379,16 +380,12 @@ Don't miss this opportunity to enhance your skills and connect with like-minded 
                 {/* Main Content */}
                 <Grid item xs={12} md={8}>
                     <Paper sx={{ overflow: 'hidden', mb: 4 }}>
-                        <img
-                            src={event.image}
+                        <OptimizedImage
+                            src={event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87'}
                             alt={event.title}
-                            style={{
-                                width: '100%',
-                                height: 'auto',
-                                minHeight: '250px',
-                                maxHeight: '400px',
-                                objectFit: 'cover'
-                            }}
+                            width="100%"
+                            height="400px"
+                            objectFit="cover"
                         />
                     </Paper>
 
