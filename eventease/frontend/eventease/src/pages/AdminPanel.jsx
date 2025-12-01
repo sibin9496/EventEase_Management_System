@@ -171,18 +171,46 @@ const AdminPanel = () => {
 
     const handleDeleteAdmin = async (adminId) => {
         if (!window.confirm('Remove this admin?')) return;
+        
+        setError('');
+        setSuccessMsg('');
+        
         try {
             const token = localStorage.getItem('token');
+            console.log('🗑️ AdminPanel: Deleting admin:', adminId);
+            
             const response = await fetch(`${API_BASE_URL}/admin/users/${adminId}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
+
+            console.log('🗑️ AdminPanel: Delete response status:', response.status);
+            
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (e) {
+                console.warn('⚠️ AdminPanel: Could not parse response as JSON');
+            }
+
             if (response.ok) {
-                setSuccessMsg('✅ Admin removed!');
-                fetchAllData();
+                console.log('✅ AdminPanel: Admin deleted successfully:', data);
+                setSuccessMsg('✅ Admin removed successfully!');
+                setTimeout(() => {
+                    console.log('📡 AdminPanel: Refreshing data after deletion...');
+                    fetchAllData();
+                }, 500);
+            } else {
+                const errorMsg = data.message || data.error || 'Failed to remove admin';
+                console.error('❌ AdminPanel: Delete failed:', errorMsg);
+                setError('❌ ' + errorMsg);
             }
         } catch (err) {
-            setError('❌ Error: ' + err.message);
+            console.error('❌ AdminPanel: Delete error:', err);
+            setError('❌ Error removing admin: ' + err.message);
         }
     };
 
