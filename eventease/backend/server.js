@@ -545,15 +545,19 @@ app.post('/api/admin/create-admin', authMiddleware, adminOnly, async (req, res) 
 
 // ==================== USER ROUTES ====================
 app.use('/api/users', usersRouter);
+console.log('✅ Mounted: /api/users');
 
 // ==================== ADMIN ROUTES ====================
 app.use('/api/admin', adminRouter);
+console.log('✅ Mounted: /api/admin');
 
 // ==================== EVENTS ROUTES ====================
 app.use('/api/events', eventsRouter);
+console.log('✅ Mounted: /api/events');
 
 // ==================== NOTIFICATIONS ROUTES ====================
 app.use('/api/notifications', notificationsRouter);
+console.log('✅ Mounted: /api/notifications');
 
 // Get all registrations (admin only)
 app.get('/api/registrations', authMiddleware, adminOnly, async (req, res) => {
@@ -839,8 +843,29 @@ app.use((err, req, res, next) => {
 // ==================== START SERVER ====================
 
 const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n${'='.repeat(60)}`);
     console.log(`✨ Server running on http://localhost:${PORT}`);
     console.log(`🚀 Backend is ready to accept requests`);
+    console.log(`${'='.repeat(60)}\n`);
+    
+    // Log all mounted routes
+    console.log('📍 Mounted Routes:');
+    app._router.stack.forEach(middleware => {
+        if (middleware.route) {
+            console.log(`   ${Object.keys(middleware.route.methods)[0].toUpperCase()} ${middleware.route.path}`);
+        } else if (middleware.name === 'router') {
+            const path = middleware.regexp.source.replace('\\/?(?=\\/|$)', '').replace(/[\\]/g, '');
+            if (middleware.handle.stack) {
+                middleware.handle.stack.forEach(handler => {
+                    if (handler.route) {
+                        const methods = Object.keys(handler.route.methods).map(m => m.toUpperCase()).join(',');
+                        console.log(`   ${methods} ${path}${handler.route.path || ''}`);
+                    }
+                });
+            }
+        }
+    });
+    console.log('');
 });
 
 // Graceful shutdown
