@@ -104,10 +104,8 @@ const SearchBar = () => {
         setSuggestions([]);
         setShowSuggestions(false);
         
-        // Small delay to ensure state is cleared before navigation
-        setTimeout(() => {
-            navigate(`/events/${eventId}`);
-        }, 50);
+        // Navigate directly without delay for better UX
+        navigate(`/events/${eventId}`);
     };
 
     const handleSubmit = (e) => {
