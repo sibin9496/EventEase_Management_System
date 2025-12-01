@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import {
     Container,
@@ -27,7 +28,7 @@ const CreateEvent = () => {
     const [success, setSuccess] = useState('');
 
     // Check if user has permission to create events
-    if (user && user.role !== 'admin') {
+    if (user && user.role !== 'admin' && user.role !== 'organizer') {
         return (
             <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
                 <Paper elevation={2} sx={{ p: 4, backgroundColor: '#fef3c7' }}>
@@ -35,7 +36,7 @@ const CreateEvent = () => {
                         ⚠️ Access Denied
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 3, color: '#b45309' }}>
-                        Only admins can create events.
+                        Only admins and organizers can create events.
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 3, color: '#b45309' }}>
                         Your current role: <strong>{user.role}</strong>
@@ -122,43 +123,81 @@ const CreateEvent = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const API_BASE = '/api';
+            
+            if (!token) {
+                setError('Authentication token not found. Please login again.');
+                setLoading(false);
+                return;
+            }
 
-            const response = await fetch(`${API_BASE}/events`, {
+            console.log('📤 CreateEvent: Submitting form data');
+            console.log('   API_BASE_URL:', API_BASE_URL);
+            console.log('   Form data:', {
+                title: formData.title,
+                description: formData.description,
+                category: formData.category,
+                type: formData.type,
+                date: formData.date,
+                time: formData.time,
+                location: formData.location,
+                price: formData.price,
+                capacity: formData.capacity,
+                image: formData.image
+            });
+
+            const eventPayload = {
+                title: formData.title,
+                description: formData.description,
+                category: formData.category,
+                type: formData.type,
+                date: new Date(formData.date).toISOString(),
+                time: formData.time,
+                location: formData.location,
+                price: parseFloat(formData.price) || 0,
+                capacity: parseInt(formData.capacity) || 50,
+                image: formData.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=300&fit=crop'
+            };
+
+            console.log('📤 CreateEvent: Payload:', JSON.stringify(eventPayload, null, 2));
+
+            const response = await fetch(`${API_BASE_URL}/events`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    title: formData.title,
-                    description: formData.description,
-                    category: formData.category,
-                    type: formData.type,
-                    date: new Date(formData.date).toISOString(),
-                    time: formData.time,
-                    location: formData.location,
-                    price: parseFloat(formData.price) || 0,
-                    capacity: parseInt(formData.capacity) || 50,
-                    image: formData.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=300&fit=crop'
-                })
+                body: JSON.stringify(eventPayload)
+            });
+
+            console.log('📥 CreateEvent: Response status:', response.status);
+            console.log('📥 CreateEvent: Response headers:', {
+                contentType: response.headers.get('content-type'),
+                status: response.statusText
             });
 
             const data = await response.json();
+            console.log('📥 CreateEvent: Response data:', data);
 
             if (!response.ok) {
-                const errorMsg = data.errors?.[0]?.msg || data.message || 'Failed to create event';
+                const errorMsg = data.errors?.[0]?.msg || 
+                                data.message || 
+                                data.error ||
+                                'Failed to create event';
+                console.error('❌ CreateEvent: API error:', errorMsg);
                 setError(errorMsg);
                 return;
             }
 
+            console.log('✅ CreateEvent: Event created successfully');
             setSuccess('Event created successfully! Redirecting...');
             setTimeout(() => {
                 navigate('/my-events');
             }, 2000);
         } catch (err) {
-            setError(err.message || 'Network error while creating event');
-            console.error('Create event error:', err);
+            const errorMsg = err.message || 'Network error while creating event';
+            console.error('❌ CreateEvent: Error:', errorMsg);
+            console.error('❌ CreateEvent: Error details:', err);
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
