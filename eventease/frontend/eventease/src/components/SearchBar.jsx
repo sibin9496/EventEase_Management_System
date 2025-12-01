@@ -1,34 +1,36 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventService } from '../services/events';
-import { Icon } from '@mui/material';
 
 const SearchBar = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const navigate = useNavigate();
-    const containerRef = useRef(null);
-    const isClickingButton = useRef(false);
+    const suggestionsRef = useRef(null);
+    const hideTimeoutRef = useRef(null);
 
-    // Handle responsive width changes
+    // Clear hide timeout on component unmount
     useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
+        return () => {
+            if (hideTimeoutRef.current) {
+                clearTimeout(hideTimeoutRef.current);
+            }
         };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const handleSearch = async (value) => {
-        console.log('🔍 SearchBar.handleSearch: Called with value:', value);
+        console.log('🔍 SearchBar: Search input changed:', value);
         setSearchQuery(value);
 
+        // Clear any pending hide timeout
+        if (hideTimeoutRef.current) {
+            clearTimeout(hideTimeoutRef.current);
+        }
+
         if (value.trim().length === 0) {
-            
-            console.log(' SearchBar.handleSearch: Empty query, clearing suggestions');
+            console.log('🔍 SearchBar: Empty query, clearing suggestions');
             setSuggestions([]);
             setShowSuggestions(false);
             return;
@@ -36,137 +38,127 @@ const SearchBar = () => {
 
         setLoading(true);
         try {
-            console.log('🔍 SearchBar.handleSearch: Calling eventService.searchEvents...');
-            // Pass search query parameter to backend API
+            console.log('🔍 SearchBar: Fetching events for query:', value);
             const response = await eventService.searchEvents(value);
-            console.log('🔍 SearchBar.handleSearch: Response received:', response);
+            console.log('🔍 SearchBar: Response received:', response);
             
             if (!response) {
-                console.error('❌ SearchBar.handleSearch: No response from API');
+                console.warn('⚠️ SearchBar: No response from API');
                 setSuggestions([]);
-                setShowSuggestions(true);
+                setShowSuggestions(false);
                 setLoading(false);
                 return;
             }
             
-            // Handle different response formats
+            // Extract events from response
             const allEvents = response?.data || response?.events || response || [];
-            console.log('🔍 SearchBar.handleSearch: Extracted events:', allEvents);
-            console.log('🔍 SearchBar.handleSearch: Events count:', allEvents.length);
+            console.log('🔍 SearchBar: Found events:', allEvents.length);
             
-            // Log first event structure for debugging
-            if (allEvents.length > 0) {
-                console.log('🔍 SearchBar.handleSearch: First event structure:', {
-                    title: allEvents[0].title,
-                    _id: allEvents[0]._id,
-                    id: allEvents[0].id,
-                    keys: Object.keys(allEvents[0]).slice(0, 10)
-                });
+            if (!Array.isArray(allEvents)) {
+                console.warn('⚠️ SearchBar: Response data is not an array:', allEvents);
+                setSuggestions([]);
+                setShowSuggestions(false);
+                setLoading(false);
+                return;
             }
             
-            // Use the search results directly from backend (already filtered)
-            const suggestions = Array.isArray(allEvents) ? allEvents.slice(0, 5) : [];
-            console.log('🔍 SearchBar.handleSearch: Sliced to 5 suggestions:', suggestions.length);
+            // Limit to top 5 results
+            const topResults = allEvents.slice(0, 5);
+            console.log('🔍 SearchBar: Showing top', topResults.length, 'results');
             
-            // Ensure events have proper ID field for click handling
-            suggestions.forEach((event, index) => {
-                console.log(`🔍 SearchBar.handleSearch: Processing suggestion ${index}:`, {
-                    title: event.title,
-                    _id: event._id,
-                    id: event.id
-                });
-                if (!event.id && event._id) {
-                    event.id = event._id;
-                    console.log(`🔍 SearchBar.handleSearch: Mapped _id to id for suggestion ${index}`);
-                }
-            });
-
-            console.log('🔍 SearchBar.handleSearch: Final suggestions count:', suggestions.length);
-            console.log('🔍 SearchBar.handleSearch: Event IDs:', suggestions.map(e => e._id || e.id).join(', '));
-            setSuggestions(suggestions);
-            setShowSuggestions(suggestions.length > 0 || value.trim().length > 0);
-            console.log('🔍 SearchBar.handleSearch: Showing suggestions:', suggestions.length > 0);
-        } catch (error) {
-            console.error('❌ SearchBar.handleSearch: Error fetching events:', error);
-            console.error('❌ SearchBar.handleSearch: Error message:', error.message);
-            console.error('❌ SearchBar.handleSearch: Error stack:', error.stack);
-            setSuggestions([]);
+            setSuggestions(topResults);
             setShowSuggestions(true);
+        } catch (error) {
+            console.error('❌ SearchBar: Error searching events:', error);
+            setSuggestions([]);
+            setShowSuggestions(false);
         } finally {
             setLoading(false);
-            console.log('🔍 SearchBar.handleSearch: Completed');
         }
     };
 
-    const handleSelectSuggestion = (eventId) => {
-        if (!eventId || eventId === 'undefined') {
-            console.warn('❌ SearchBar: Cannot navigate - event ID is missing or invalid');
-            console.warn('SearchBar: Event ID value:', eventId);
+    const handleSelectSuggestion = (event) => {
+        if (!event) {
+            console.warn('⚠️ SearchBar: Event object is missing');
             return;
         }
-        
-        console.log('✅ SearchBar: Navigating to event detail');
-        console.log('   Event ID:', eventId);
-        console.log('   Navigation path: /events/' + eventId);
-        
-        // Clear state IMMEDIATELY before any navigation
+
+        const eventId = event._id || event.id;
+        console.log('🖱️ SearchBar: Suggestion clicked');
+        console.log('   Event:', event.title);
+        console.log('   Event ID (_id):', event._id);
+        console.log('   Event ID (id):', event.id);
+        console.log('   Using ID:', eventId);
+
+        if (!eventId) {
+            console.error('❌ SearchBar: No event ID found');
+            return;
+        }
+
+        // Clear suggestions and search
         setSearchQuery('');
         setSuggestions([]);
         setShowSuggestions(false);
-        isClickingButton.current = false;
-        
-        // Navigate directly without delay for better UX
+
+        console.log('✅ SearchBar: Navigating to /events/' + eventId);
+        // Navigate to event details
         navigate(`/events/${eventId}`);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const query = searchQuery.trim();
+        
         if (query) {
-            console.log('🔍 SearchBar: Submitting search:', query);
-            // Navigate to events page with search query
-            const searchState = { 
-                searchQuery: query,
-                performSearch: true
-            };
-            console.log('🔍 SearchBar: Navigation state:', searchState);
-            // Clear state IMMEDIATELY before navigation
-            setSearchQuery('');
+            console.log('🔍 SearchBar: Form submitted with query:', query);
+            
+            // Clear suggestions
             setSuggestions([]);
             setShowSuggestions(false);
-            // Navigate with state
-            navigate('/events', { state: searchState });
+            
+            // Navigate to events page with search
+            navigate('/events', { state: { searchQuery: query } });
         }
     };
 
     return (
-        <div style={styles.container} ref={containerRef}>
+        <div style={styles.container} ref={suggestionsRef}>
             <form onSubmit={handleSubmit} style={styles.form}>
                 <div style={styles.searchWrapper}>
                     <span style={styles.searchIcon}>🔍</span>
                     <input
                         type="text"
-                        placeholder="Search events by name, category, location..."
+                        placeholder="Search events..."
                         value={searchQuery}
                         onChange={(e) => handleSearch(e.target.value)}
-                        onFocus={() => searchQuery && setShowSuggestions(true)}
-                        onBlur={() => {
-                            // Don't hide suggestions if a button is being clicked
-                            if (!isClickingButton.current) {
-                                setTimeout(() => setShowSuggestions(false), 200);
+                        onFocus={() => {
+                            console.log('🔍 SearchBar: Input focused');
+                            if (suggestions.length > 0) {
+                                setShowSuggestions(true);
                             }
                         }}
+                        onBlur={() => {
+                            console.log('🔍 SearchBar: Input blurred');
+                            // Delay hiding suggestions to allow click to register
+                            hideTimeoutRef.current = setTimeout(() => {
+                                console.log('🔍 SearchBar: Hiding suggestions after blur');
+                                setShowSuggestions(false);
+                            }, 300);
+                        }}
                         style={styles.input}
+                        autoComplete="off"
                     />
                     {searchQuery && (
                         <button
                             type="button"
                             onClick={() => {
+                                console.log('🔍 SearchBar: Clear button clicked');
                                 setSearchQuery('');
                                 setSuggestions([]);
                                 setShowSuggestions(false);
                             }}
                             style={styles.clearBtn}
+                            onMouseDown={(e) => e.preventDefault()}
                         >
                             ✕
                         </button>
@@ -182,28 +174,25 @@ const SearchBar = () => {
                             <>
                                 {suggestions.map((event) => (
                                     <button
-                                        key={event._id || event.id}
+                                        key={event._id || event.id || event.title}
                                         type="button"
                                         onClick={(e) => {
+                                            console.log('🖱️ SearchBar: Suggestion button clicked:', event.title);
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            const eventId = event._id || event.id;
-                                            console.log('🖱️ Suggestion clicked:', {
-                                                title: event.title,
-                                                eventId: eventId,
-                                                hasId: !!eventId
-                                            });
-                                            if (!eventId) {
-                                                console.warn('⚠️ Event ID missing in suggestion');
-                                                return;
-                                            }
-                                            // Set flag before navigation
-                                            isClickingButton.current = true;
-                                            handleSelectSuggestion(eventId);
+                                            handleSelectSuggestion(event);
+                                        }}
+                                        onMouseDown={(e) => {
+                                            console.log('🖱️ SearchBar: Suggestion mouse down');
+                                            e.preventDefault();
                                         }}
                                         style={styles.suggestionItem}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f5f5f5';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                        }}
                                     >
                                         <span style={styles.suggestionIcon}>📍</span>
                                         <div style={styles.suggestionContent}>
@@ -217,13 +206,14 @@ const SearchBar = () => {
                                 <button
                                     type="submit"
                                     style={styles.viewAllBtn}
+                                    onMouseDown={(e) => e.preventDefault()}
                                 >
                                     View all results →
                                 </button>
                             </>
                         ) : (
                             <div style={styles.suggestionItem}>
-                                No events found matching "{searchQuery}"
+                                No events found for "{searchQuery}"
                             </div>
                         )}
                     </div>
