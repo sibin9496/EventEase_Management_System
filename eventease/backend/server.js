@@ -11,6 +11,10 @@ import usersRouter from './routes/users.js';
 import notificationsRouter from './routes/notifications.js';
 import adminRouter from './routes/admin.js';
 import eventsRouter from './routes/events.js';
+import authRouter from './routes/auth.js';
+import registrationsRouter from './routes/registrations.js';
+import subscriptionsRouter from './routes/subscriptions.js';
+import locationsRouter from './routes/locations.js';
 
 // Version: 2.1.0 - Admin and Events routers mounted
 dotenv.config();
@@ -548,6 +552,10 @@ app.post('/api/admin/create-admin', authMiddleware, adminOnly, async (req, res) 
 app.use('/api/users', usersRouter);
 console.log('✅ Mounted: /api/users');
 
+// ==================== AUTH ROUTES ====================
+app.use('/api/auth', authRouter);
+console.log('✅ Mounted: /api/auth');
+
 // ==================== ADMIN ROUTES ====================
 app.use('/api/admin', adminRouter);
 console.log('✅ Mounted: /api/admin');
@@ -555,6 +563,18 @@ console.log('✅ Mounted: /api/admin');
 // ==================== EVENTS ROUTES ====================
 app.use('/api/events', eventsRouter);
 console.log('✅ Mounted: /api/events');
+
+// ==================== REGISTRATIONS ROUTES ====================
+app.use('/api/registrations', registrationsRouter);
+console.log('✅ Mounted: /api/registrations');
+
+// ==================== SUBSCRIPTIONS ROUTES ====================
+app.use('/api/subscriptions', subscriptionsRouter);
+console.log('✅ Mounted: /api/subscriptions');
+
+// ==================== LOCATIONS ROUTES ====================
+app.use('/api/locations', locationsRouter);
+console.log('✅ Mounted: /api/locations');
 
 // ==================== NOTIFICATIONS ROUTES ====================
 app.use('/api/notifications', notificationsRouter);
