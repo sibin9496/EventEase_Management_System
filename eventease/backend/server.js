@@ -9,6 +9,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import usersRouter from './routes/users.js';
 import notificationsRouter from './routes/notifications.js';
+import adminRouter from './routes/admin.js';
+import eventsRouter from './routes/events.js';
 
 dotenv.config();
 
@@ -543,6 +545,12 @@ app.post('/api/admin/create-admin', authMiddleware, adminOnly, async (req, res) 
 
 // ==================== USER ROUTES ====================
 app.use('/api/users', usersRouter);
+
+// ==================== ADMIN ROUTES ====================
+app.use('/api/admin', adminRouter);
+
+// ==================== EVENTS ROUTES ====================
+app.use('/api/events', eventsRouter);
 
 // ==================== NOTIFICATIONS ROUTES ====================
 app.use('/api/notifications', notificationsRouter);
