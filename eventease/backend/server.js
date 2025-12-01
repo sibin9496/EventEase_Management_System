@@ -12,6 +12,7 @@ import notificationsRouter from './routes/notifications.js';
 import adminRouter from './routes/admin.js';
 import eventsRouter from './routes/events.js';
 
+// Version: 2.1.0 - Admin and Events routers mounted
 dotenv.config();
 
 const app = express();
