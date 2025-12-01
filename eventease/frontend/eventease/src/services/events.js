@@ -202,7 +202,7 @@ export const eventService = {
     // Unregister from event
     unregisterFromEvent: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/events/${id}/unregister`, {
+            const response = await fetch(`${API_BASE_URL}/events/${id}/unregister`, {
                 method: 'POST',
                 headers: getAuthHeaders()
             });
@@ -222,7 +222,7 @@ export const eventService = {
     // Check if user is registered
     isUserRegistered: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/events/${id}/is-registered`, {
+            const response = await fetch(`${API_BASE_URL}/events/${id}/is-registered`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -241,7 +241,7 @@ export const eventService = {
     // Get user's registered events
     getRegisteredEvents: async () => {
         try {
-            const response = await fetch(`${API_URL}/events/user/registered-events`, {
+            const response = await fetch(`${API_BASE_URL}/events/user/registered-events`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -261,7 +261,7 @@ export const eventService = {
     favoriteEvent: async (eventId) => {
         try {
             console.log('📡 Adding event to favorites:', eventId);
-            const response = await fetch(`${API_URL}/events/${eventId}/favorite`, {
+            const response = await fetch(`${API_BASE_URL}/events/${eventId}/favorite`, {
                 method: 'POST',
                 headers: getAuthHeaders()
             });
@@ -285,7 +285,7 @@ export const eventService = {
     unfavoriteEvent: async (eventId) => {
         try {
             console.log('📡 Removing event from favorites:', eventId);
-            const response = await fetch(`${API_URL}/events/${eventId}/favorite`, {
+            const response = await fetch(`${API_BASE_URL}/events/${eventId}/favorite`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
@@ -309,7 +309,7 @@ export const eventService = {
     getUserFavorites: async () => {
         try {
             console.log('📡 Fetching user favorites...');
-            const response = await fetch(`${API_URL}/events/user/favorites`, {
+            const response = await fetch(`${API_BASE_URL}/events/user/favorites`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -331,7 +331,7 @@ export const eventService = {
     // Check if event is favorited by current user
     isFavorite: async (eventId) => {
         try {
-            const response = await fetch(`${API_URL}/events/${eventId}/is-favorite`, {
+            const response = await fetch(`${API_BASE_URL}/events/${eventId}/is-favorite`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });

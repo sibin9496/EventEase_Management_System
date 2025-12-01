@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventService } from '../services/events';
 import { Icon } from '@mui/material';
@@ -8,9 +8,19 @@ const SearchBar = () => {
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const navigate = useNavigate();
     const containerRef = useRef(null);
     const isClickingButton = useRef(false);
+
+    // Handle responsive width changes
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleSearch = async (value) => {
         console.log('🔍 SearchBar.handleSearch: Called with value:', value);
@@ -215,7 +225,10 @@ const styles = {
     container: {
         width: '100%',
         maxWidth: '500px',
-        position: 'relative'
+        position: 'relative',
+        '@media (maxWidth: 768px)': {
+            maxWidth: '100%'
+        }
     },
     form: {
         width: '100%'
