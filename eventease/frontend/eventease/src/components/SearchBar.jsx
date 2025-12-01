@@ -54,6 +54,16 @@ const SearchBar = () => {
             console.log('🔍 SearchBar.handleSearch: Extracted events:', allEvents);
             console.log('🔍 SearchBar.handleSearch: Events count:', allEvents.length);
             
+            // Log first event structure for debugging
+            if (allEvents.length > 0) {
+                console.log('🔍 SearchBar.handleSearch: First event structure:', {
+                    title: allEvents[0].title,
+                    _id: allEvents[0]._id,
+                    id: allEvents[0].id,
+                    keys: Object.keys(allEvents[0]).slice(0, 10)
+                });
+            }
+            
             // Use the search results directly from backend (already filtered)
             const suggestions = Array.isArray(allEvents) ? allEvents.slice(0, 5) : [];
             console.log('🔍 SearchBar.handleSearch: Sliced to 5 suggestions:', suggestions.length);
@@ -103,6 +113,7 @@ const SearchBar = () => {
         setSearchQuery('');
         setSuggestions([]);
         setShowSuggestions(false);
+        isClickingButton.current = false;
         
         // Navigate directly without delay for better UX
         navigate(`/events/${eventId}`);
@@ -142,9 +153,8 @@ const SearchBar = () => {
                         onBlur={() => {
                             // Don't hide suggestions if a button is being clicked
                             if (!isClickingButton.current) {
-                                setTimeout(() => setShowSuggestions(false), 150);
+                                setTimeout(() => setShowSuggestions(false), 200);
                             }
-                            isClickingButton.current = false;
                         }}
                         style={styles.input}
                     />
@@ -177,14 +187,18 @@ const SearchBar = () => {
                                         onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            isClickingButton.current = true;
                                             const eventId = event._id || event.id;
-                                            console.log('🖱️ Suggestion clicked, event:', eventId);
+                                            console.log('🖱️ Suggestion clicked:', {
+                                                title: event.title,
+                                                eventId: eventId,
+                                                hasId: !!eventId
+                                            });
                                             if (!eventId) {
                                                 console.warn('⚠️ Event ID missing in suggestion');
-                                                isClickingButton.current = false;
                                                 return;
                                             }
+                                            // Set flag before navigation
+                                            isClickingButton.current = true;
                                             handleSelectSuggestion(eventId);
                                         }}
                                         style={styles.suggestionItem}
